@@ -5,17 +5,17 @@ Sistema de administrador para utilizar las tecnología de MVC, con roles, sistem
 # Empezar
  
  1. Agregar la cadena de conexión en el archivo appsetting.json
- ``
+ ```
  "ConnectionStrings": {
   "DefaultConnection": "<Copia tu conexión aquí>"
 }
-``
+ ```
 
 2. Hacer la migración y actualizar la base de datos.
-``
+ ```
 add-migration Initial
 update-database
-``
+ ```
 
 # Libreriás
 - Microsoft.EntityFrameworkCore.Tools
