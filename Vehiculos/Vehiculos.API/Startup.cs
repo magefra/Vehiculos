@@ -1,10 +1,13 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Vehiculos.API.Data;
+using Vehiculos.API.Data.Entities;
+using Vehiculos.API.Helpers;
 
 namespace Vehiculos.API
 {
@@ -22,11 +25,23 @@ namespace Vehiculos.API
         {
             services.AddControllersWithViews();
 
+            services.AddIdentity<Usuario, IdentityRole>(x =>
+            {
+                x.User.RequireUniqueEmail = true;
+                x.Password.RequireDigit = false;
+                x.Password.RequiredUniqueChars = 0;
+                x.Password.RequireLowercase = false;
+                x.Password.RequireNonAlphanumeric = false;
+                x.Password.RequireUppercase = false;
+            }).AddEntityFrameworkStores<DataContext>();
+
+
             services.AddDbContext<DataContext>(options =>
                    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnnection")));
 
 
             services.AddTransient<SeeDB>();
+            services.AddScoped<IUsuarioHelper, UsuarioHelper>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -44,6 +59,7 @@ namespace Vehiculos.API
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseAuthentication();
 
             app.UseRouting();
 

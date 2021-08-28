@@ -3,16 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Vehiculos.API.Data.Entities;
+using Vehiculos.API.Helpers;
+using Vehiculos.Common.Enums;
 
 namespace Vehiculos.API.Data
 {
     public class SeeDB
     {
         private readonly DataContext _context;
+        private readonly IUsuarioHelper _usuarioHelper;
 
-        public SeeDB(DataContext context)
+        public SeeDB(DataContext context, IUsuarioHelper usuarioHelper)
         {
             _context = context;
+            _usuarioHelper = usuarioHelper;
         }
 
         public async Task SeedAsync()
@@ -26,7 +30,50 @@ namespace Vehiculos.API.Data
             await CheckMarcasAsync();
             await CheckTipoDocumentoAsync();
             await CheckProcedemientoAsync();
+            await CheckRolesAsycn();
+            await CheckUserAsync("1010", "Magdiel", "Palacios", "magefra9@hotmail.com", "311 322 4620", "Calle Luna Calle Sol", TipoUsuario.Administrador);
+            await CheckUserAsync("2020", "Benjamin", "Palacios", "benjamin@hotmail.com", "311 322 4620", "Calle Luna Calle Sol", TipoUsuario.Usuario);
         }
+
+
+
+
+
+
+        private async Task CheckUserAsync(string document, string firstName, string lastName, string email, string phoneNumber, string address, TipoUsuario userType)
+        {
+            Usuario user = await _usuarioHelper.GetUserAsync(email);
+            if (user == null)
+            {
+                user = new Usuario
+                {
+                    Direccion = address,
+                    Documento = document,
+                    TipoDocumento = _context.TipoDocumentos.FirstOrDefault(x => x.Descripcion == "Cédula"),
+                    Email = email,
+                    Nombre = firstName,
+                    Apellidos = lastName,
+                    PhoneNumber = phoneNumber,
+                    UserName = email,
+                    TipoUsuario = userType
+                };
+
+                await _usuarioHelper.AddUserAsync(user, "123456");
+                await _usuarioHelper.AddUserToRoleAsync(user, userType.ToString());
+
+                //string token = await _usuarioHelper.GenerateEmailConfirmationTokenAsync(user);
+                //await _usuarioHelper.ConfirmEmailAsync(user, token);
+            }
+        }
+
+
+
+        private async Task CheckRolesAsycn()
+        {
+            await _usuarioHelper.CheckRoleAsync(TipoUsuario.Administrador.ToString());
+            await _usuarioHelper.CheckRoleAsync(TipoUsuario.Usuario.ToString());
+        }
+
 
         private async Task CheckProcedemientoAsync()
         {

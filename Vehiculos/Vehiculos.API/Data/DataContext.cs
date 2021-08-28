@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using Vehiculos.API.Data.Entities;
 
 namespace Vehiculos.API.Data
 {
-    public class DataContext : DbContext
+    public class DataContext : IdentityDbContext
     {
         public DataContext(DbContextOptions<DataContext> options): base(options)
         {
@@ -19,6 +20,7 @@ namespace Vehiculos.API.Data
         public DbSet<Procedimiento> Procedimientos { get; set; }
         public DbSet<Marca> Marcas { get; set; }
         public DbSet<TipoDocumento> TipoDocumentos { get; set; }
+        public DbSet<Usuario> Usuarios { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

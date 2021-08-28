@@ -21,3 +21,4 @@ update-database
 - Microsoft.EntityFrameworkCore.Tools
 - Microsoft.EntityFrameworkCore
 - Microsoft.EntityFrameworkCore.SqlServer
+- Microsoft.AspNetCore.Identity.EntityFrameworkCore
