@@ -17,6 +17,8 @@ namespace Vehiculos.API.Data
 
         public DbSet<VehiculoTipo> VehiculosTipo { get; set; }
         public DbSet<Procedimiento> Procedimientos { get; set; }
+        public DbSet<Marca> Marcas { get; set; }
+        public DbSet<TipoDocumento> TipoDocumentos { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -26,6 +28,11 @@ namespace Vehiculos.API.Data
             modelBuilder.Entity<VehiculoTipo>().HasIndex(x => x.Descripcion).IsUnique();
 
             modelBuilder.Entity<Procedimiento>().HasIndex(x => x.Descripcion).IsUnique();
+
+
+            modelBuilder.Entity<Marca>().HasIndex(x => x.Descripcion).IsUnique();
+
+            modelBuilder.Entity<TipoDocumento>().HasIndex(x => x.Descripcion).IsUnique();
 
 
 
