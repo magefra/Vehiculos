@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading.Tasks;
@@ -7,6 +8,7 @@ using Vehiculos.API.Data.Entities;
 
 namespace Vehiculos.API.Controllers
 {
+    [Authorize(Roles = "Administrador")]
     public class VehiculoTiposController : Controller
     {
         private readonly DataContext _context;

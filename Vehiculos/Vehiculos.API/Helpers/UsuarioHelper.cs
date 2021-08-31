@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 using Vehiculos.API.Data;
 using Vehiculos.API.Data.Entities;
+using Vehiculos.API.Models;
 
 namespace Vehiculos.API.Helpers
 {
@@ -12,13 +13,15 @@ namespace Vehiculos.API.Helpers
         private readonly UserManager<Usuario> _usuarioManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly DataContext _dataContext;
+        private readonly SignInManager<Usuario> _signInManager;
 
-        public UsuarioHelper(UserManager<Usuario> usuarioManager, RoleManager<IdentityRole> roleManager, DataContext dataContext)
+        public UsuarioHelper(UserManager<Usuario> usuarioManager, RoleManager<IdentityRole> roleManager, DataContext dataContext, SignInManager<Usuario> signInManager)
         {
 
             _usuarioManager = usuarioManager;
             _roleManager = roleManager;
             _dataContext = dataContext;
+            _signInManager = signInManager;
         }
 
 
@@ -56,6 +59,18 @@ namespace Vehiculos.API.Helpers
         public async Task<bool> IsUserInRoleAsync(Usuario user, string roleName)
         {
             return await _usuarioManager.IsInRoleAsync(user, roleName);
+        }
+
+
+        public async Task<SignInResult> LoginAsync(LoginViewModel model)
+        {
+            return await _signInManager.PasswordSignInAsync(model.Usuario, model.Password,model.Recuerdame, false);
+        }
+
+
+        public async Task LogoutAsync()
+        {
+            await _signInManager.SignOutAsync();
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,8 @@ using Vehiculos.API.Data;
 using Vehiculos.API.Data.Entities;
 
 namespace Vehiculos.API.Controllers
-{
+{ 
+    [Authorize(Roles ="Administrador")]
     public class MarcasController : Controller
     {
 

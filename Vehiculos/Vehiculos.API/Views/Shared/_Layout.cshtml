@@ -18,23 +18,44 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Procedimientos" asp-action="Index">Procedimientos</a>
-                        </li>
 
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Marcas" asp-action="Index">Marcas</a>
-                        </li>
+                        @if(User.Identity.IsAuthenticated && User.IsInRole("Administrador"))
+                        {
+                              
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Procedimientos" asp-action="Index">Procedimientos</a>
+                            </li>
 
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="VehiculoTipos" asp-action="Index">Tipo de vehículos</a>
-                        </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Marcas" asp-action="Index">Marcas</a>
+                            </li>
 
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="TipoDocumentos" asp-action="Index">Tipo de documentos</a>
-                        </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="VehiculoTipos" asp-action="Index">Tipo de vehículos</a>
+                            </li>
 
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="TipoDocumentos" asp-action="Index">Tipo de documentos</a>
+                            </li>
+                        }
                     </ul>
+                    <ul class="navbar-nav navbar-right">
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="ChangeUser">@User.Identity.Name</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Logout">Cerrar Sesión</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li><a asp-area="" asp-controller="Account" asp-action="Login">Iniciar Sesión</a></li>
+                        }
+                    
+                    </ul>
+
                 </div>
             </div>
         </nav>
