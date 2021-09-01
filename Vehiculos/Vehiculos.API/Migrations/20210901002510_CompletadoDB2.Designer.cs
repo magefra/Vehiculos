@@ -10,8 +10,8 @@ using Vehiculos.API.Data;
 namespace Vehiculos.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20210828013647_AddUsuariosTables")]
-    partial class AddUsuariosTables
+    [Migration("20210901002510_CompletadoDB2")]
+    partial class CompletadoDB2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -223,6 +223,88 @@ namespace Vehiculos.API.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("Vehiculos.API.Data.Entities.Detalle", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("HistoriaId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Observacion")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("PrecioManoObra")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("PrecioRepuestos")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("ProcedureId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("HistoriaId");
+
+                    b.HasIndex("ProcedureId");
+
+                    b.ToTable("Detalles");
+                });
+
+            modelBuilder.Entity("Vehiculos.API.Data.Entities.FotoVehiculo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<Guid>("IdImagen")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("VehiculoId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VehiculoId");
+
+                    b.ToTable("FotoVehiculos");
+                });
+
+            modelBuilder.Entity("Vehiculos.API.Data.Entities.Historia", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("Fecha")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Kilometraje")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Observacion")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UsuarioId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("VehiculoId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.HasIndex("VehiculoId");
+
+                    b.ToTable("Historias");
+                });
+
             modelBuilder.Entity("Vehiculos.API.Data.Entities.Marca", b =>
                 {
                     b.Property<int>("Id")
@@ -284,6 +366,58 @@ namespace Vehiculos.API.Migrations
                         .IsUnique();
 
                     b.ToTable("TipoDocumentos");
+                });
+
+            modelBuilder.Entity("Vehiculos.API.Data.Entities.Vehiculo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Color")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Linea")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int>("MarcaId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Modelo")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Observacion")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Placa")
+                        .IsRequired()
+                        .HasMaxLength(6)
+                        .HasColumnType("nvarchar(6)");
+
+                    b.Property<int>("TipoVehiculoId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UsuarioId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MarcaId");
+
+                    b.HasIndex("Placa")
+                        .IsUnique();
+
+                    b.HasIndex("TipoVehiculoId");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("Vehiculos");
                 });
 
             modelBuilder.Entity("Vehiculos.API.Data.Entities.VehiculoTipo", b =>
@@ -394,6 +528,80 @@ namespace Vehiculos.API.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Vehiculos.API.Data.Entities.Detalle", b =>
+                {
+                    b.HasOne("Vehiculos.API.Data.Entities.Historia", "Historia")
+                        .WithMany("Detalles")
+                        .HasForeignKey("HistoriaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Vehiculos.API.Data.Entities.Procedimiento", "Procedure")
+                        .WithMany("Detalles")
+                        .HasForeignKey("ProcedureId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Historia");
+
+                    b.Navigation("Procedure");
+                });
+
+            modelBuilder.Entity("Vehiculos.API.Data.Entities.FotoVehiculo", b =>
+                {
+                    b.HasOne("Vehiculos.API.Data.Entities.Vehiculo", "Vehiculo")
+                        .WithMany("VehiculoFotos")
+                        .HasForeignKey("VehiculoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Vehiculo");
+                });
+
+            modelBuilder.Entity("Vehiculos.API.Data.Entities.Historia", b =>
+                {
+                    b.HasOne("Vehiculos.API.Data.Entities.Usuario", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId");
+
+                    b.HasOne("Vehiculos.API.Data.Entities.Vehiculo", "Vehiculo")
+                        .WithMany("Historias")
+                        .HasForeignKey("VehiculoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Usuario");
+
+                    b.Navigation("Vehiculo");
+                });
+
+            modelBuilder.Entity("Vehiculos.API.Data.Entities.Vehiculo", b =>
+                {
+                    b.HasOne("Vehiculos.API.Data.Entities.Marca", "Marca")
+                        .WithMany("Vehiculos")
+                        .HasForeignKey("MarcaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Vehiculos.API.Data.Entities.VehiculoTipo", "TipoVehiculo")
+                        .WithMany("Vehiculos")
+                        .HasForeignKey("TipoVehiculoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Vehiculos.API.Data.Entities.Usuario", "Usuario")
+                        .WithMany("Vehiculos")
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Marca");
+
+                    b.Navigation("TipoVehiculo");
+
+                    b.Navigation("Usuario");
+                });
+
             modelBuilder.Entity("Vehiculos.API.Data.Entities.Usuario", b =>
                 {
                     b.HasOne("Vehiculos.API.Data.Entities.TipoDocumento", "TipoDocumento")
@@ -405,9 +613,41 @@ namespace Vehiculos.API.Migrations
                     b.Navigation("TipoDocumento");
                 });
 
+            modelBuilder.Entity("Vehiculos.API.Data.Entities.Historia", b =>
+                {
+                    b.Navigation("Detalles");
+                });
+
+            modelBuilder.Entity("Vehiculos.API.Data.Entities.Marca", b =>
+                {
+                    b.Navigation("Vehiculos");
+                });
+
+            modelBuilder.Entity("Vehiculos.API.Data.Entities.Procedimiento", b =>
+                {
+                    b.Navigation("Detalles");
+                });
+
             modelBuilder.Entity("Vehiculos.API.Data.Entities.TipoDocumento", b =>
                 {
                     b.Navigation("Usuarios");
+                });
+
+            modelBuilder.Entity("Vehiculos.API.Data.Entities.Vehiculo", b =>
+                {
+                    b.Navigation("Historias");
+
+                    b.Navigation("VehiculoFotos");
+                });
+
+            modelBuilder.Entity("Vehiculos.API.Data.Entities.VehiculoTipo", b =>
+                {
+                    b.Navigation("Vehiculos");
+                });
+
+            modelBuilder.Entity("Vehiculos.API.Data.Entities.Usuario", b =>
+                {
+                    b.Navigation("Vehiculos");
                 });
 #pragma warning restore 612, 618
         }

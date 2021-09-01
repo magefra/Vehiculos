@@ -19,6 +19,12 @@ namespace Vehiculos.API.Data.Entities
         public string Descripcion { get; set; }
 
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public ICollection<Vehiculo> Vehiculos { get; set; }
+
+
 
 
     }
