@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Threading.Tasks;
 using Vehiculos.API.Data;
 using Vehiculos.API.Data.Entities;
@@ -54,7 +55,12 @@ namespace Vehiculos.API.Helpers
                 .FirstOrDefaultAsync(x => x.Email == email);
         }
 
-
+        public async Task<Usuario> GetUserAsync(Guid id)
+        {
+            return await _dataContext.Usuarios
+                .Include(x => x.TipoDocumento)
+                .FirstOrDefaultAsync(x => x.Id == id.ToString());
+        }
 
         public async Task<bool> IsUserInRoleAsync(Usuario user, string roleName)
         {
@@ -71,6 +77,21 @@ namespace Vehiculos.API.Helpers
         public async Task LogoutAsync()
         {
             await _signInManager.SignOutAsync();
+        }
+
+
+
+        public async Task<IdentityResult> UpdateUserAsync(Usuario user)
+        {
+            Usuario currentUser = await GetUserAsync(user.Email);
+            currentUser.Nombre = user.Nombre;
+            currentUser.Apellidos = user.Apellidos;
+            currentUser.TipoDocumento = user.TipoDocumento;
+            currentUser.Documento = user.Documento;
+            currentUser.Direccion = user.Direccion;
+            currentUser.IdImagen = user.IdImagen;
+            currentUser.PhoneNumber = user.PhoneNumber;
+            return await _usuarioManager.UpdateAsync(currentUser);
         }
     }
 }

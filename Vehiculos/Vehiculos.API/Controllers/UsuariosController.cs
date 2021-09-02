@@ -87,5 +87,60 @@ namespace Vehiculos.API.Controllers
             model.TipoDocumentos = _combosHelper.GetCombosTipoDocumentos();
             return View(model);
         }
+
+
+
+        // GET: VehiculoTipos/Edit/5
+        public async Task<IActionResult> Edit(string? id)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                return NotFound();
+            }
+
+            Usuario usuario = await _usuarioHelper.GetUserAsync(Guid.Parse(id));
+            if (usuario == null)
+            {
+                return NotFound();
+            }
+
+            UsuarioViewModel model = _converterHelper.ToUserViewModel(usuario);
+
+
+            return View(model);
+        }
+
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(UsuarioViewModel model)
+        {
+
+            if (ModelState.IsValid)
+            {
+
+
+                Guid imageId = model.IdImagen;
+                if (model.ImagenFile != null)
+                {
+                    imageId = await _blobHelper.UploadBlobAsync(model.ImagenFile, "usuarios");
+                }
+
+
+                Usuario usuario = await _converterHelper.ToUserAsync(model, imageId, false);
+
+
+                await _usuarioHelper.UpdateUserAsync(usuario);
+
+                return RedirectToAction(nameof(Index));
+
+
+            }
+
+
+            model.TipoDocumentos = _combosHelper.GetCombosTipoDocumentos();
+            return View(model);
+        }
     }
 }

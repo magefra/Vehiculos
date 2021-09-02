@@ -64,6 +64,14 @@ namespace Vehiculos.API.Models
         public IFormFile ImagenFile { get; set; }
 
 
+
+        [Display(Name = "Foto")]
+        public string ImageFullPath => IdImagen == Guid.Empty
+           ? $"https://localhost:44320/img/noimage.png"
+           : $"https://vehiculosmag.blob.core.windows.net/usuarios/{IdImagen}";
+
+
+
         [Display(Name = "Tipo de documento")]
         [Range(1, int.MaxValue, ErrorMessage = "Debes seleccionar un tipo de documento.")]
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]

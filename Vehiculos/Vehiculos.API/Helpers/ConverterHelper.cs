@@ -57,6 +57,7 @@ namespace Vehiculos.API.Helpers
                 Email = user.Email,
                 Nombre = user.Nombre,
                 Id =  user.Id,
+                IdImagen = user.IdImagen,
                 Apellidos = user.Apellidos,
                 Telefono = user.PhoneNumber,
                 TipoUsuario = user.TipoUsuario,

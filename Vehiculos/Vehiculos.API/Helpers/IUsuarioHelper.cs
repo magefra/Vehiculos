@@ -12,7 +12,11 @@ namespace Vehiculos.API.Helpers
     {
         Task<Usuario> GetUserAsync(string email);
 
+        Task<Usuario> GetUserAsync(Guid id);
+
         Task<IdentityResult> AddUserAsync(Usuario user, string password);
+
+        Task<IdentityResult> UpdateUserAsync(Usuario user);
 
         Task CheckRoleAsync(string roleName);
 
