@@ -1,15 +1,28 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
+using Vehiculos.API.Data.Entities;
 using Vehiculos.Common.Enums;
 
-namespace Vehiculos.API.Data.Entities
+namespace Vehiculos.API.Models
 {
-    public class Usuario : IdentityUser
+    public class UsuarioViewModel
     {
+
+
+        public string Id { get; set; }
+
+        [Display(Name = "Email")]
+        [EmailAddress(ErrorMessage = "Debes introducir un email válido.")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
+        public string Email { get; set; }
+
+
         [DisplayName("Nombre")]
         [MaxLength(50, ErrorMessage = "El campo {0} no puede tener más de {1} caracteres")]
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
@@ -20,9 +33,7 @@ namespace Vehiculos.API.Data.Entities
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
         public string Apellidos { get; set; }
 
-        [DisplayName("TipoDocumento")]
-        [Required(ErrorMessage = "El campo {0} es obligatorio")]
-        public TipoDocumento TipoDocumento { get; set; }
+        
 
 
         [DisplayName("Documento")]
@@ -34,26 +45,34 @@ namespace Vehiculos.API.Data.Entities
         [MaxLength(100, ErrorMessage = "El campo {0} no puede tener más de {1} caracteres")]
         public string Direccion { get; set; }
 
+
+        [DisplayName("Telefono")]
+        [MaxLength(20, ErrorMessage = "El campo {0} no puede tener más de {1} caracteres")]
+        public string Telefono { get; set; }
+
         [DisplayName("Foto")]
         public Guid IdImagen { get; set; }
 
-        [Display(Name = "Foto")]
-        public string ImageFullPath => IdImagen == Guid.Empty
-            ? $"https://localhost:44320/img/noimage.png"
-            : $"https://vehiculosmag.blob.core.windows.net/usuarios/{IdImagen}";
+        
 
 
         [Display(Name = "TipoUsuario")]
         public TipoUsuario TipoUsuario { get; set; }
 
-        [Display(Name = "Nombre Completo")]
-        public string NombreCompleto => $"{Nombre} {Apellidos}";
+      
+        [Display(Name = "Foto")]
+        public IFormFile ImagenFile { get; set; }
 
 
-        public ICollection<Vehiculo> Vehiculos { get; set; }
+        [Display(Name = "Tipo de documento")]
+        [Range(1, int.MaxValue, ErrorMessage = "Debes seleccionar un tipo de documento.")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
+        public int IdTipoDocumentos { get; set; }
 
-        [Display(Name = "# Vehículos")]
-        public int VehiculosCount => Vehiculos == null ? 0 : Vehiculos.Count;
+        public IEnumerable<SelectListItem> TipoDocumentos { get; set; }
+
+
+
 
     }
 }

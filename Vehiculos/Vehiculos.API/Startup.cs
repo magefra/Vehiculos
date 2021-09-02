@@ -43,6 +43,8 @@ namespace Vehiculos.API
             services.AddTransient<SeeDB>();
             services.AddScoped<IUsuarioHelper, UsuarioHelper>();
             services.AddScoped<ICombosHelper, CombosHelper>();
+            services.AddScoped<IConverterHelper, ConverterHelper>();
+            services.AddScoped<IBlobHelper, BlobHelper>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -22,3 +22,4 @@ update-database
 - Microsoft.EntityFrameworkCore
 - Microsoft.EntityFrameworkCore.SqlServer
 - Microsoft.AspNetCore.Identity.EntityFrameworkCore
+- Microsoft.WindowsAzure.Storage
