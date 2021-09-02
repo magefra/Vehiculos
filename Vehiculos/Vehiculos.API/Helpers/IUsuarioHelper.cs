@@ -18,6 +18,9 @@ namespace Vehiculos.API.Helpers
 
         Task<IdentityResult> UpdateUserAsync(Usuario user);
 
+
+        Task<IdentityResult> DeleteUserAsync(Usuario user);
+
         Task CheckRoleAsync(string roleName);
 
         Task AddUserToRoleAsync(Usuario user, string roleName);

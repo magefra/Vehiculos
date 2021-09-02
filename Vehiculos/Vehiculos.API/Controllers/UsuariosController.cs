@@ -142,5 +142,64 @@ namespace Vehiculos.API.Controllers
             model.TipoDocumentos = _combosHelper.GetCombosTipoDocumentos();
             return View(model);
         }
+
+
+        public async Task<IActionResult> Delete(string? id)
+        {
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                return NotFound();
+            }
+
+            Usuario usuario = await _usuarioHelper.GetUserAsync(Guid.Parse(id));
+            if (usuario == null)
+            {
+                return NotFound();
+            }
+
+            await _usuarioHelper.DeleteUserAsync(usuario);
+
+
+            await _blobHelper.DeleteBlobAsync(usuario.IdImagen, "usuarios");
+
+
+            return RedirectToAction(nameof(Index));
+
+
+        }
+
+        public async Task<IActionResult> Details(string id)
+        {
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                return NotFound();
+            }
+
+            Usuario user = await _dataContext.Usuarios
+                .Include(x => x.TipoDocumento)
+                .Include(x => x.Vehiculos)
+                .ThenInclude(x => x.Marca)
+                .Include(x => x.Vehiculos)
+                .ThenInclude(x => x.TipoVehiculo)
+                .Include(x => x.Vehiculos)
+                .ThenInclude(x => x.VehiculoFotos)
+                .Include(x => x.Vehiculos)
+                .ThenInclude(x => x.Historias)
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            if(user == null)
+            {
+                return NotFound();
+            }
+
+
+            return View(user);
+
+
+        }
+
+
+
+
     }
 }

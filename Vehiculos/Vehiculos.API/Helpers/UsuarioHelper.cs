@@ -48,10 +48,23 @@ namespace Vehiculos.API.Helpers
             }
         }
 
+
+        public  async Task<IdentityResult> DeleteUserAsync(Usuario user)
+        {
+            return await _usuarioManager.DeleteAsync(user);
+        }
+
+
+
         public async Task<Usuario> GetUserAsync(string email)
         {
             return await _dataContext.Usuarios
-                .Include(x => x.TipoDocumento)         
+                .Include(x => x.TipoDocumento)
+                .Include(x => x.Vehiculos)
+                .ThenInclude(x => x.VehiculoFotos)
+                .Include(x => x.Vehiculos)
+                .ThenInclude(x => x.Historias)
+                .ThenInclude(x => x.Detalles)
                 .FirstOrDefaultAsync(x => x.Email == email);
         }
 
@@ -59,6 +72,11 @@ namespace Vehiculos.API.Helpers
         {
             return await _dataContext.Usuarios
                 .Include(x => x.TipoDocumento)
+                .Include(x => x.Vehiculos)
+                .ThenInclude(x => x.VehiculoFotos)
+                .Include(x => x.Vehiculos)
+                .ThenInclude(x => x.Historias)
+                .ThenInclude(x => x.Detalles)
                 .FirstOrDefaultAsync(x => x.Id == id.ToString());
         }
 
