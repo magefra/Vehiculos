@@ -168,9 +168,10 @@ namespace Vehiculos.API.Controllers
 
         }
 
+
         public async Task<IActionResult> Details(string id)
         {
-            if (string.IsNullOrWhiteSpace(id))
+            if (string.IsNullOrEmpty(id))
             {
                 return NotFound();
             }
@@ -186,17 +187,124 @@ namespace Vehiculos.API.Controllers
                 .Include(x => x.Vehiculos)
                 .ThenInclude(x => x.Historias)
                 .FirstOrDefaultAsync(x => x.Id == id);
-
-            if(user == null)
+            if (user == null)
             {
                 return NotFound();
             }
 
-
             return View(user);
+        }
+
+        public async Task<IActionResult> addVehiculos(string id)
+        {
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                return NotFound();
+            }
+
+            Usuario user = await _dataContext.Usuarios
+                .Include(x => x.Vehiculos)
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            VehiculoViewModel model = new VehiculoViewModel
+            {
+                Marcas = _combosHelper.GetCombosMarcas(),
+                IdUsuario = user.Id,
+                TipoVehiculos = _combosHelper.GetCombosTíposVehculos(),
+            };
+
+            return View(model);
 
 
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> addVehiculos(VehiculoViewModel model)
+        {
+           
+                Usuario user = await _dataContext.Usuarios
+                    .Include(x => x.Vehiculos)
+                    .FirstOrDefaultAsync(x => x.Id == model.IdUsuario);
+
+                if (user == null)
+                {
+                    return NotFound();
+                }
+
+
+                Guid idImage = Guid.Empty;
+
+                if (model.ImagenFile != null)
+                {
+                    idImage = await _blobHelper.UploadBlobAsync(model.ImagenFile, "vehiculos");
+
+                }
+
+
+                Vehiculo vehiculo = await _converterHelper.ToVehiculoAsync(model, true);
+                if (vehiculo.VehiculoFotos == null)
+                {
+                    vehiculo.VehiculoFotos = new List<FotoVehiculo>();
+                }
+
+                vehiculo.VehiculoFotos.Add(new FotoVehiculo
+                {
+                    IdImagen = idImage
+                });
+
+
+
+                try
+                {
+                    user.Vehiculos.Add(vehiculo);
+                    _dataContext.Usuarios.Update(user);
+                    await _dataContext.SaveChangesAsync();
+
+
+                    return RedirectToAction("Details", new { id = user.Id });
+                }
+                catch (DbUpdateException dbUpdateException)
+                {
+
+                    if (dbUpdateException.InnerException.Message.Contains("duplicate"))
+                    {
+                        ModelState.AddModelError(string.Empty, "Ya existe este un vehículo.");
+                    }
+                    else
+                    {
+
+                        ModelState.AddModelError(string.Empty, dbUpdateException.InnerException.Message);
+                    }
+
+
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError(string.Empty, ex.InnerException.Message);
+                }
+            
+
+
+
+
+
+            model.Marcas = _combosHelper.GetCombosMarcas();
+            model.TipoVehiculos = _combosHelper.GetCombosTipoDocumentos();
+
+            return View(model);
+        }
+
+
+
+
+
+
 
 
 

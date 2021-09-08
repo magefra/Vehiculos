@@ -56,12 +56,60 @@ namespace Vehiculos.API.Helpers
                 TipoDocumentos = _combosHelper.GetCombosTipoDocumentos(),
                 Email = user.Email,
                 Nombre = user.Nombre,
-                Id =  user.Id,
+                Id = user.Id,
                 IdImagen = user.IdImagen,
                 Apellidos = user.Apellidos,
                 Telefono = user.PhoneNumber,
                 TipoUsuario = user.TipoUsuario,
             };
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="imageId"></param>
+        /// <param name="isNew"></param>
+        /// <returns></returns>
+        public async Task<Vehiculo> ToVehiculoAsync(VehiculoViewModel model, bool isNew)
+        {
+            return new Vehiculo
+            {
+
+                Marca = await _context.Marcas.FindAsync(model.idMarca),
+                Color = model.Color,
+                Id = isNew ? 0 : model.Id,
+                Linea = model.Linea,
+                Modelo = model.Modelo,
+                Placa =  model.Placa.ToUpper(),
+                Observacion = model.Observacion,
+                TipoVehiculo = await _context.VehiculosTipo.FindAsync(model.IdTipoVehiculo)
+            };
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="vehiculo"></param>
+        /// <returns></returns>
+        public VehiculoViewModel ToVehiculoViewModel(Vehiculo vehiculo)
+        {
+            return new VehiculoViewModel
+            {
+                idMarca = vehiculo.Marca.Id,
+                Marcas = _combosHelper.GetCombosMarcas(),
+                Color = vehiculo.Color,
+                Id = vehiculo.Id,
+                Linea = vehiculo.Linea,
+                Modelo = vehiculo.Modelo,
+                Placa = vehiculo.Placa,
+                Observacion = vehiculo.Observacion,
+                IdUsuario = vehiculo.Usuario.Id,
+
+
+
+            };      
+        
         }
     }
 }
